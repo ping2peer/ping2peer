@@ -1,0 +1,5 @@
+# Lambda runtime (boto3 is included by default in Python 3.12 Lambda runtime)
+# No additional dependencies needed for Lambda deployment.
+
+# For local self-hosted server:
+websockets>=13.0
