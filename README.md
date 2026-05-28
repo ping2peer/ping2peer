@@ -11,13 +11,14 @@ Below is the connection orchestration flow between devices, illustrating discove
 ```mermaid
 sequenceDiagram
     autonumber
-    Note over Device A, Signaling Server: 1. Discovery & Connection Setup
+
+    Note over Device A, Device B: 1. Discovery & Connection Setup
     Device A->>Signaling Server: Connect & register local identity
     Device B->>Signaling Server: Connect & register local identity
     Signaling Server-->>Device A: Peer joined: Device B
     Signaling Server-->>Device B: Peer joined: Device A
 
-    Note over Device A, Signaling Server: 2. Auto-Connect Tie-breaker  (Lower ID initiates)
+    Note over Device A, Device B: 2. Auto-Connect Tie-Breaking (Lower ID wins initiator role)
     Note over Device A: Evaluates: A < B. Initiates connection request.
     Note over Device B: Evaluates: B > A. Silently waits.
 
@@ -28,7 +29,7 @@ sequenceDiagram
     Device B->>Signaling Server: acceptConnection(to: A)
     Signaling Server->>Device A: connectionAccepted(from: B)
 
-    Note over Device A, Signaling Server: 3. WebRTC Offer & Answer (Secure Handshake)
+    Note over Device A, Device B: 3. WebRTC Offer & Answer (Secure Handshake)
     Device A->>Signaling Server: sendSignalingPayload(WebRTC Offer)
     Signaling Server->>Device B: incomingPayload(WebRTC Offer)
     Note over Device B: Process Offer & create Answer
@@ -82,10 +83,10 @@ Ensure you have the AWS CLI and AWS SAM (Serverless Application Model) CLI insta
 * [AWS SAM CLI Installation Guide](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html)
 
 #### 2. Configure AWS Profile
-Configure your credentials. In this project, we target the `us-east-2` (Ohio) region using a profile named `p2p`:
+Configure your credentials. In this project, we are using a profile named `p2p`:
 ```bash
 aws configure --profile p2p
-# Default region: us-east-2
+# Default region: us-east-1
 # Default output format: json
 ```
 
@@ -99,7 +100,7 @@ sam deploy --guided --profile p2p
 
 During guided configuration, choose:
 * **Stack Name:** `ping2peer-signal`
-* **AWS Region:** `us-east-2`
+* **AWS Region:** `us-east-1`
 * **Confirm changes before deploy:** `Yes`
 * **Allow SAM CLI IAM role creation:** `Yes`
 * Save settings to `samconfig.toml` for future one-step deploys (`sam deploy`).
